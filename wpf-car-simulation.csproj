@@ -8,4 +8,12 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Resources\mapa_v4_hard.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\mapa_v4_hard.png" />
+  </ItemGroup>
+
 </Project>
