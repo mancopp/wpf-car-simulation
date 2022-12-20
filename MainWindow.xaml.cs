@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,32 @@ namespace wpf_car_simulation
         public MainWindow()
         {
             InitializeComponent();
+            canvas.Focus();
+
+            Thread thr = new Thread(move);
+            thr.Start();
+            
+private void move()
+        {
+
+        for(int i = 0; i < 100; i++)
+            {
+               
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    Canvas.SetLeft(car1, Canvas.GetLeft(car1) + 1);
+
+                }));
+                Thread.Sleep(100);
+
+            }
+
+
+
         }
+
+
+
+
     }
 }
