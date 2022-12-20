@@ -30,7 +30,7 @@ namespace wpf_car_simulation
             thr.Start();
 
         }
-            
+            //
         private void move()
         {
 
