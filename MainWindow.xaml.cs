@@ -23,6 +23,12 @@ namespace wpf_car_simulation
         public MainWindow()
         {
             InitializeComponent();
+            Logic.StartSimulation(this);
+        }
+
+        public void Output(string str)
+        {
+            MessageBox.Show(str);
         }
     }
 }
