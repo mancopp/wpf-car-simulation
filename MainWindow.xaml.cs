@@ -34,7 +34,7 @@ namespace wpf_car_simulation
         private void move()
         {
 
-        for(int i = 0; i < 100; i++)
+        for(int i = 0; i < 287; i++)
             {
                
                 this.Dispatcher.Invoke((Action)(() =>
@@ -42,11 +42,94 @@ namespace wpf_car_simulation
                     Canvas.SetLeft(car1, Canvas.GetLeft(car1) + 1);
 
                 }));
-                Thread.Sleep(100);
 
+
+
+                Thread.Sleep(10);
             }
 
-       
+            for (int j = 0; j < 16; j++)
+            {
+                // tutaj możesz użyć x i y, aby narysować punkt (x, y) na ekranie lub w pliku itp.
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    Canvas.SetLeft(car1, Canvas.GetLeft(car1) + 1);
+
+                    Canvas.SetTop(car1, Canvas.GetTop(car1) + 2);
+
+                }));
+                Thread.Sleep(20);
+            }
+
+            for (int j = 0; j < 16; j++)
+            {
+                // tutaj możesz użyć x i y, aby narysować punkt (x, y) na ekranie lub w pliku itp.
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    Canvas.SetLeft(car1, Canvas.GetLeft(car1) - 1);
+
+                    Canvas.SetTop(car1, Canvas.GetTop(car1) + 2);
+
+                }));
+                Thread.Sleep(20);
+            }
+
+            for (int i = 0; i < 230; i++)
+            {
+
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    Canvas.SetLeft(car1, Canvas.GetLeft(car1) - 1);
+
+                }));
+
+
+
+                Thread.Sleep(10);
+            }
+
+
+            for (int j = 0; j < 23; j++)
+            {
+                // tutaj możesz użyć x i y, aby narysować punkt (x, y) na ekranie lub w pliku itp.
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    Canvas.SetLeft(car1, Canvas.GetLeft(car1) - 1);
+
+                    Canvas.SetTop(car1, Canvas.GetTop(car1) + 2);
+
+                }));
+                Thread.Sleep(20);
+            }
+
+            for (int j = 0; j < 23; j++)
+            {
+                // tutaj możesz użyć x i y, aby narysować punkt (x, y) na ekranie lub w pliku itp.
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    Canvas.SetLeft(car1, Canvas.GetLeft(car1) + 1);
+
+                    Canvas.SetTop(car1, Canvas.GetTop(car1) + 2);
+
+                }));
+                Thread.Sleep(20);
+            }
+
+            for (int i = 0; i < 287; i++)
+            {
+
+                this.Dispatcher.Invoke((Action)(() =>
+                {
+                    Canvas.SetLeft(car1, Canvas.GetLeft(car1) + 1);
+
+                }));
+
+
+
+                Thread.Sleep(10);
+            }
+
+
 
         }
 

@@ -7,19 +7,19 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Canvas  Name="canvas">
-      
+
         <Image Source="Resources/mapa_v4_hard.png" Height="400" Width="400" />
 
-        
+
         <Rectangle
             Name="car1"
     Width="10"
     Height="10"
     Fill="Blue"
-    Canvas.Left="0"
-    Canvas.Top="140" />
+    Canvas.Left="-10"
+    Canvas.Top="144" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-        
+
 
     </Canvas>
 </Window>
