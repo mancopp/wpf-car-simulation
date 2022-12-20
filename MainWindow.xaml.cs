@@ -28,8 +28,10 @@ namespace wpf_car_simulation
 
             Thread thr = new Thread(move);
             thr.Start();
+
+        }
             
-private void move()
+        private void move()
         {
 
         for(int i = 0; i < 100; i++)
@@ -44,7 +46,7 @@ private void move()
 
             }
 
-
+       
 
         }
 
