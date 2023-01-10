@@ -5,13 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:wpf_car_simulation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        ResizeMode="NoResize"
+        Title="MainWindow" Height="900" Width="1600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="6*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Image Grid.Column="0" Source="Resources/mapa_v4_hard.png"></Image>
+        <Canvas Name="myCanvas">
+
+        </Canvas>
         <Grid Grid.Column="1" Background="LightGray">
             <StackPanel Margin="5">
                 <Label FontWeight="Bold" FontSize="18">Car</Label>

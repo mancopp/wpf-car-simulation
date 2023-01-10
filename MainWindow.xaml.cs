@@ -23,7 +23,7 @@ namespace wpf_car_simulation
         public MainWindow()
         {
             InitializeComponent();
-            Logic.StartSimulation(this);
+            Car car = new Car(myCanvas);
         }
 
         public void Output(string str)
