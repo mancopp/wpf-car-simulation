@@ -23,7 +23,7 @@
                 <TextBox Height="20"/>
                 <Label>Direction:</Label>
                 <TextBox Height="20"/>
-                <Button Height="20" Content="Spawn"/>
+                <Button Height="20" Content="Spawn" Click="Button_Click"/>
 
                 <Label FontWeight="Bold" FontSize="18">Train</Label>
                 <Label>Direction:</Label>
@@ -34,6 +34,7 @@
                 <Button Height="20" Content="Start Simulation"/>
                 <Button Height="20" Content="Toggle Barriers"/>
                 <Button Height="20" Content="Pause" Background="red" Foreground="White" BorderBrush="White"/>
+                <Label Content="{Binding CarPos}"></Label>
             </StackPanel>
             
         </Grid>
