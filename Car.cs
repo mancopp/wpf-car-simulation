@@ -25,8 +25,8 @@ namespace wpf_car_simulation
 
         public void spawnStatic()
         {
-            int top = 310;
-            int left = 30;
+            int top = 290;
+            int left = 10;
 
             System.Windows.Controls.Image carSprite = new System.Windows.Controls.Image();
             carSprite.Source = new BitmapImage(new Uri(@"/wpf-car-simulation;component/Resources/car.png", UriKind.Relative));

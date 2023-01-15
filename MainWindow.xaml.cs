@@ -23,14 +23,17 @@ namespace wpf_car_simulation
     {
         public Car car;
 
+        List<Car> CarList = new List<Car>();
+
+        public int counter=-1;
+
         public MainWindow()
         {
             InitializeComponent();
-            Car car = new Car(myCanvas);
-            car.spawnStatic();
-            this.car = car;
 
-            this.DataContext = car;
+            
+         
+            
         }
 
         public void Output(string str)
@@ -42,17 +45,30 @@ namespace wpf_car_simulation
         {
             for (int i = 0; i < 360*100; i++)
             {
-                this.Dispatcher.Invoke(() => car.Rotate(1));
+               
+
+              this.Dispatcher.Invoke(() => car.Rotate(1));
+               
+
+
                 Thread.Sleep(1);
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            new Thread(() => moveCarThr()).Start();
+            CarList.Add(new Car(myCanvas));
+
+            counter++;
+            new Thread(() => StandardRoute(CarList[counter])).Start();
+            CarList[counter].spawnStatic();
+           
+            //this.car = CarList[0];
+
+            //this.DataContext = CarList[0];
         }
 
-        public void StandardRoute()
+        public void StandardRoute(Car car)
         {
             for (int i = 0; i < 650; i++)
             {
@@ -61,7 +77,7 @@ namespace wpf_car_simulation
             }
 
             //Check if redlight
-            Thread.Sleep(500);
+           
 
             for (int i = 0; i < 120; i++)
             {
@@ -69,11 +85,53 @@ namespace wpf_car_simulation
                 Thread.Sleep(1);
             }
 
-            Thread.Sleep(500);
+            
 
-            this.Dispatcher.Invoke(() => car.SetRotation(0));
-            Thread.Sleep(1000);
-            this.Dispatcher.Invoke(() => car.OffsetPos(70, 70));
+            //this.Dispatcher.Invoke(() => car.SetRotation(0));
+          
+            for (int i = 0; i < 85; i++)
+            {
+                this.Dispatcher.Invoke(() => car.OffsetPos(1, 1));
+                Thread.Sleep(1);
+            }
+            for (int i = 0; i < 85; i++)
+            {
+                this.Dispatcher.Invoke(() => car.OffsetPos(1, -1));
+                Thread.Sleep(1);
+            }
+
+            
+            for (int i = 0; i < 550; i++)
+            {
+                this.Dispatcher.Invoke(() => car.OffsetPos(0, -1));
+                Thread.Sleep(1);
+            }
+           
+
+            for (int i = 0; i < 145; i++)
+            {
+                this.Dispatcher.Invoke(() => car.OffsetPos(1, -1));
+                Thread.Sleep(1);
+            }
+           
+            for (int i = 0; i < 145; i++)
+            {
+                this.Dispatcher.Invoke(() => car.OffsetPos(1, 1));
+                Thread.Sleep(1);
+            }
+
+            for (int i = 0; i < 400; i++)
+            {
+                this.Dispatcher.Invoke(() => car.OffsetPos(0, 1));
+                Thread.Sleep(1);
+            }
+          
+            for (int i = 0; i < 600; i++)
+            {
+                this.Dispatcher.Invoke(() => car.OffsetPos(0, 1));
+                Thread.Sleep(1);
+            }
+
         }
     }
 }
