@@ -115,7 +115,12 @@ namespace wpf_car_simulation
                 counterLeft++;
                 CarListLeft[counterLeft].velocity = velocity;
                 CarListLeft[counterLeft].spawnStatic(directionRight);
-                new Thread(() => RouteLeft(CarListLeft[counterLeft])).Start();
+                if (counterLeft > 1)
+                { 
+                    new Thread(() => RouteLeft(CarListLeft[counterLeft], CarListLeft[counterLeft - 1])).Start(); } 
+                else  {
+                    new Thread(() => RouteLeft(CarListLeft[counterLeft], CarListLeft[counterLeft])).Start();
+                }
             }
         }
 
@@ -197,7 +202,7 @@ namespace wpf_car_simulation
         }
 
 
-        public void RouteLeft(Car car)
+        public void RouteLeft(Car car, Car car2)
         {
            double x = 0, y = 0,r = 0;
 
@@ -227,15 +232,9 @@ namespace wpf_car_simulation
                 else r = 0;
 
                 car.position = i;
-                Car car2 = car;
-                if (CarListLeft.ElementAtOrDefault(car.id + 1) != null)
-                {
-                    car2 = CarListLeft[car.id + 1];
-                }
 
                 if (counterLeft > 1)
                 {
-
                     if (car2.position - car.position == 60)
                     {
                         MessageBox.Show("Stop");
