@@ -24,129 +24,99 @@ namespace wpf_car_simulation
     public partial class MainWindow : INotifyOnPropertyChanged
     {
 
-        public MainWindow()
-        {
-            DataContext = this;
-
-            InitializeComponent();
-            //  
-
-
-
-        }
-
-        public Car car;
-
         List<Car> CarListLeft = new List<Car>();
         List<Car> CarListRight = new List<Car>();
 
         public int counterLeft = -1;
         public int counterRight = -1;
-        public bool direction = true;
+        public bool directionRight;
+        public bool directionBot;
 
-        public string Speed="1";
+        public string Speed = "1";
+
+        private string _boundNumberCar;
+        private string _boundNumberTrain;
+
+        private bool carStop = false;
 
 
-
-
-
-        private string _boundNumber;
-
-        public string BoundNumber
+        public string BoundNumberCar
         {
-            get { return _boundNumber; }
+            get { return _boundNumberCar; }
             set
             {
 
 
-                if (_boundNumber != value)
+                if (_boundNumberCar != value)
                 {
-                _boundNumber = value;
+                    _boundNumberCar = value;
                     OnPropertyChanged();
-                
+
                 }
             }
-
-
         }
 
+        public string BoundNumberTrain
+        {
+            get { return _boundNumberTrain; }
+            set
+            {
 
 
+                if (_boundNumberTrain != value)
+                {
+                    _boundNumberTrain = value;
+                    OnPropertyChanged();
+
+                }
+            }
+        }
+
+        public MainWindow()
+        {
+            DataContext = this;
+            InitializeComponent();
+        }
 
         public void Output(string str)
         {
             MessageBox.Show(str);
         }
 
-        private void moveCarThr()
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < 360*100; i++)
-            {
-               
+            int velocity = Int32.Parse(BoundNumberCar);
 
-              this.Dispatcher.Invoke(() => car.Rotate(1));
-               
-
-
-                Thread.Sleep(1);
-            }
-        }
-
-      
-
-
-            private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            
-
-
-            int velocity = Int32.Parse(BoundNumber);
-
-            if (direction == true)
+            if (directionRight == true)
             {
                 CarListRight.Add(new Car(myCanvas));
-
 
                 counterRight++;
                 CarListRight[counterRight].velocity = velocity;
                 CarListRight[counterRight].id = counterRight;
+                CarListRight[counterRight].spawnStatic(directionRight);
 
-                CarListRight[counterRight].spawnStatic(direction);
-                if(counterRight > 0)
-                new Thread(() => StandardRoute(CarListRight[counterRight], CarListRight[counterRight-1])).Start();
-                else new Thread(() => StandardRoute(CarListRight[counterRight], CarListRight[counterRight])).Start();
+                if (counterRight > 0)
+                { 
+                    new Thread(() => RouteRight(CarListRight[counterRight], CarListRight[counterRight - 1])).Start(); 
+                }
+                else 
+                {
+                    new Thread(() => RouteRight(CarListRight[counterRight], CarListRight[counterRight])).Start(); 
+                }
             }
-
             else {
                 CarListLeft.Add(new Car(myCanvas));
 
                 counterLeft++;
-
                 CarListLeft[counterLeft].velocity = velocity;
-                CarListLeft[counterLeft].spawnStatic(direction);
+                CarListLeft[counterLeft].spawnStatic(directionRight);
 
-                new Thread(() => StandardRoute2(CarListLeft[counterLeft])).Start();
-
+                new Thread(() => RouteLeft(CarListLeft[counterLeft])).Start();
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
 
-        public void StandardRoute(Car car, Car car2)
+        public void RouteRight(Car car, Car car2)
         {
             for (int i = 0; i < 650; i++)
             {
@@ -164,8 +134,6 @@ namespace wpf_car_simulation
                 Thread.Sleep(car.velocity);
 
             }
-
-           
 
             //Check if redlight
 
@@ -226,9 +194,9 @@ namespace wpf_car_simulation
         }
 
 
-        public void StandardRoute2(Car car)
+        public void RouteLeft(Car car)
         {
-           double x =0, y = 0,r=0;
+           double x = 0, y = 0,r = 0;
 
             for (int i = 0; i < 2990; i++)
             {
@@ -250,25 +218,17 @@ namespace wpf_car_simulation
                 if (1890 < i && i <= 1990)  x = -0.6;
 
                 // Rotate
-
             
                 if ((910 < i && i <= 1000) || (1030 < i && i <= 1120)) r = 1;
                 else if (1660 < i && i <= 2090) r = -0.418;
-                else r= 0;
+                else r = 0;
 
                 ////1000<i<= y=-1 ; x=0;
-
-
 
                 this.Dispatcher.Invoke(() => car.OffsetPos(y, x));
                 this.Dispatcher.Invoke(() => car.Rotate(r));
                 Thread.Sleep(car.velocity);
-
-
-
-
             }
-
 
             //for (int i = 0; i < 910; i++)
             //{
@@ -368,12 +328,27 @@ namespace wpf_car_simulation
 
             //       r =0
             //}
-
-
         }
 
-
-
+        public void RailRoadBot(Train train)
+        {
+            carStop = true;
+            int offset;
+            if (train.directionBot)
+            {
+                offset = 1;
+            }
+            else
+            {
+                offset = -1;
+            }
+            for (int i = 0; i < 1200; i++)
+            {
+                this.Dispatcher.Invoke(() => train.OffsetPos(offset, 0));
+                Thread.Sleep(train.velocity);
+            }
+            carStop = false;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -382,14 +357,36 @@ namespace wpf_car_simulation
 
         }
 
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        private void Left_Checked(object sender, RoutedEventArgs e)
         {
-          direction = false;
+            directionRight = false;
         }
 
         private void Right_Checked(object sender, RoutedEventArgs e)
         {
-            direction = true;
+            directionRight = true;
+        }
+
+        private void Top_Checked(object sender, RoutedEventArgs e)
+        {
+            directionBot = false;
+        }
+
+        private void Bot_Checked(object sender, RoutedEventArgs e)
+        {
+            directionBot = true;
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            int velocity = Int32.Parse(BoundNumberTrain);
+
+            Train train = new Train(myCanvas);
+
+            train.velocity = velocity;
+            train.directionBot = directionBot;
+            train.spawnStatic();
+            new Thread(() => RailRoadBot(train)).Start();
         }
     }
 }

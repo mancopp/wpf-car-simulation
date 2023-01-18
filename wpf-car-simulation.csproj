@@ -11,10 +11,12 @@
   <ItemGroup>
     <None Remove="Resources\car.png" />
     <None Remove="Resources\mapa_v4_hard.png" />
+    <None Remove="Resources\Train.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\car.png" />
+    <Resource Include="Resources\Train.png" />
     <Resource Include="Resources\mapa_v4_hard.png" />
   </ItemGroup>
 

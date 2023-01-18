@@ -14,7 +14,6 @@ namespace wpf_car_simulation
         private Canvas mainCanvas;
         public int id = 1;
         public int velocity = 1;
-        private bool directedToRight = true;
         private Image carSprite;
         private double _rotateTransformAngle = 0;
         public double top;
@@ -46,7 +45,7 @@ namespace wpf_car_simulation
             }
 
             System.Windows.Controls.Image carSprite = new System.Windows.Controls.Image();
-            carSprite.Source = new BitmapImage(new Uri(@"/wpf-car-simulation;component/Resources/car.png", UriKind.Relative));
+            carSprite.Source = new BitmapImage(new Uri(@"/wpf-car-simulation;component/" + imgPath, UriKind.Relative));
             carSprite.Height = 50;
 
             this.carSprite = carSprite;
