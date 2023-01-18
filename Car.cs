@@ -12,21 +12,38 @@ namespace wpf_car_simulation
     {
         private readonly string imgPath = "Resources/car.png";
         private Canvas mainCanvas;
-        private int id = 1;
-        private int velocity = 1;
+        public int id = 1;
+        public int velocity = 1;
         private bool directedToRight = true;
         private Image carSprite;
-        private int _rotateTransformAngle = 0;
+        private double _rotateTransformAngle = 0;
+        public double top;
+        public double left;
 
         public Car(Canvas canvas)
         {
             this.mainCanvas = canvas;
         }
 
-        public void spawnStatic()
+        public void spawnStatic(bool direction)
         {
-            int top = 290;
-            int left = 10;
+
+
+            if (direction == true)
+            {
+                top = 290;
+                left = 10;
+                
+
+            }
+            else
+            {
+
+                top = 685;
+                left = 1150;
+
+
+            }
 
             System.Windows.Controls.Image carSprite = new System.Windows.Controls.Image();
             carSprite.Source = new BitmapImage(new Uri(@"/wpf-car-simulation;component/Resources/car.png", UriKind.Relative));
@@ -34,14 +51,31 @@ namespace wpf_car_simulation
 
             this.carSprite = carSprite;
 
+            //    SetRotation(-90);
+
             SetRotation(-90);
+
+            if (direction == true)
+            {
+                SetRotation(-90);
+
+            }
+            else
+            {
+
+                SetRotation(90);
+
+
+            }
+
 
             this.mainCanvas.Children.Add(this.carSprite);
             Canvas.SetTop(this.carSprite, top);
             Canvas.SetLeft(this.carSprite, left);
+
         }
 
-        public void startThread()
+        public void startThread(double startRt)
         {
 
             int top = 180;
@@ -51,7 +85,7 @@ namespace wpf_car_simulation
             carSprite.Source = new BitmapImage(new Uri(@"/wpf-car-simulation;component/Resources/car.png", UriKind.Relative));
             carSprite.Width = 80;
             carSprite.Height = 80;
-            RotateTransform rt = new RotateTransform(-90);
+            RotateTransform rt = new RotateTransform(startRt);
             rt.CenterX = 25;
             rt.CenterY = 25;
 
@@ -69,10 +103,12 @@ namespace wpf_car_simulation
             Canvas.SetLeft(carSprite, left);
         }
 
-        public void OffsetPos(int topOff, int leftOff)
+        public void OffsetPos(double topOff, double leftOff)
         {
             Canvas.SetTop(carSprite, Canvas.GetTop(carSprite) + topOff);
+            top = Canvas.GetTop(carSprite) + topOff;
             Canvas.SetLeft(carSprite, Canvas.GetLeft(carSprite) + leftOff);
+           left = Canvas.GetTop(carSprite) + topOff;
         }
 
         public void SetRotation(int rot)
@@ -84,7 +120,7 @@ namespace wpf_car_simulation
             carSprite.RenderTransform = rt;
         }
 
-        public void Rotate(int rot)
+        public void Rotate(double rot)
         {
             _rotateTransformAngle += rot;
             RotateTransform rt = new RotateTransform(_rotateTransformAngle);

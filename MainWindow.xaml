@@ -20,14 +20,19 @@
             <StackPanel Margin="5">
                 <Label FontWeight="Bold" FontSize="18">Car</Label>
                 <Label>Velocity:</Label>
-                <TextBox Height="20"/>
+                <TextBox Height="20" Text="{Binding BoundNumber}"/>
                 <Label>Direction:</Label>
-                <TextBox Height="20"/>
+                <RadioButton Content="Left" Checked="RadioButton_Checked"/>
+                <RadioButton x:Name="Right" Content="Right" Checked="Right_Checked" />
+                
+                
                 <Button Height="20" Content="Spawn" Click="Button_Click"/>
 
                 <Label FontWeight="Bold" FontSize="18">Train</Label>
                 <Label>Direction:</Label>
-                <TextBox Height="20"/>
+                <TextBox Height="20" Name="Direction2" />
+                <!--<RadioButton Content="Left" Name="leftMove" IsChecked="{Binding Right}"/>
+                <RadioButton Content="Right" Name="rightMove"/>-->
                 <Button Height="20" Content="Spawn"/>
 
                 <Label FontWeight="Bold" FontSize="18">DevTools</Label>
