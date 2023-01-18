@@ -44,8 +44,7 @@ namespace wpf_car_simulation
         public int counterRight = -1;
         public bool direction = true;
 
-        public string Speed="1";
-
+     
 
 
 
@@ -92,15 +91,40 @@ namespace wpf_car_simulation
             }
         }
 
-      
 
 
-            private void Button_Click(object sender, RoutedEventArgs e)
+        //switch (velocity) {
+
+        //    case 1: velocity = 10; break;case 2: velocity =9; break;case 3: velocity = 8; break; case 4: velocity = 7; break;case 5: velocity = 6; break;case 6: velocity = 4; break;case 7: velocity = 3; break; case 8: velocity = 2; break;case 9: velocity = 1; break; 
+
+
+
+        //}
+
+
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             
 
 
             int velocity = Int32.Parse(BoundNumber);
+
+            switch (velocity)
+            {
+
+                case 1: velocity = 10; break;
+                case 2: velocity = 9; break;
+                case 3: velocity = 8; break;
+                case 4: velocity = 7; break;
+                case 5: velocity = 6; break;
+                case 6: velocity = 4; break;
+                case 7: velocity = 3; break;
+                case 8: velocity = 2; break;
+                case 9: velocity = 1; break;
+
+
+
+            }
 
             if (direction == true)
             {
@@ -124,8 +148,16 @@ namespace wpf_car_simulation
 
                 CarListLeft[counterLeft].velocity = velocity;
                 CarListLeft[counterLeft].spawnStatic(direction);
+                if (counterLeft > 1)
+                { new Thread(() => StandardRoute2(CarListLeft[counterLeft], CarListLeft[counterLeft - 1])).Start(); } 
+                else  {
 
-                new Thread(() => StandardRoute2(CarListLeft[counterLeft])).Start();
+                    new Thread(() => StandardRoute2(CarListLeft[counterLeft], CarListLeft[counterLeft])).Start();
+                }
+                        
+  
+
+
 
             }
 
@@ -151,6 +183,7 @@ namespace wpf_car_simulation
             for (int i = 0; i < 650; i++)
             {
                 this.Dispatcher.Invoke(() => car.OffsetPos(0, 1));
+
                
 
 
@@ -226,7 +259,7 @@ namespace wpf_car_simulation
         }
 
 
-        public void StandardRoute2(Car car)
+        public void StandardRoute2(Car car, Car car2)
         {
            double x =0, y = 0,r=0;
 
@@ -258,7 +291,19 @@ namespace wpf_car_simulation
 
                 ////1000<i<= y=-1 ; x=0;
 
+                car.position = i;
 
+                if (counterLeft > 1)
+                {
+                    if (car2.position - car.position == 60)
+                    {
+
+
+                        car.velocity = car2.velocity;
+
+                    }
+
+                }
 
                 this.Dispatcher.Invoke(() => car.OffsetPos(y, x));
                 this.Dispatcher.Invoke(() => car.Rotate(r));
@@ -268,7 +313,13 @@ namespace wpf_car_simulation
 
 
             }
-
+            if (counterLeft > 0)
+            {
+                CarListLeft.RemoveAt(car.id);
+                counterLeft--;
+            }
+        
+          
 
             //for (int i = 0; i < 910; i++)
             //{
