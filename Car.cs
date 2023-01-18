@@ -18,6 +18,7 @@ namespace wpf_car_simulation
         private double _rotateTransformAngle = 0;
         public double top;
         public double left;
+        public int position;
 
         public Car(Canvas canvas)
         {

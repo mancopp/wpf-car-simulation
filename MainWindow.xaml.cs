@@ -23,6 +23,7 @@ namespace wpf_car_simulation
     /// </summary>
     public partial class MainWindow : INotifyOnPropertyChanged
     {
+        public Car car;
 
         List<Car> CarListLeft = new List<Car>();
         List<Car> CarListRight = new List<Car>();
@@ -83,9 +84,15 @@ namespace wpf_car_simulation
             MessageBox.Show(str);
         }
 
+        private int VelocityConverter(int num)
+        {
+            int multiplier = num - 1;
+            return (num + 9 - 2 * multiplier);
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            int velocity = Int32.Parse(BoundNumberCar);
+            int velocity = VelocityConverter(Int32.Parse(BoundNumberCar));
 
             if (directionRight == true)
             {
@@ -96,23 +103,24 @@ namespace wpf_car_simulation
                 CarListRight[counterRight].id = counterRight;
                 CarListRight[counterRight].spawnStatic(directionRight);
 
-                if (counterRight > 0)
-                { 
-                    new Thread(() => RouteRight(CarListRight[counterRight], CarListRight[counterRight - 1])).Start(); 
-                }
-                else 
-                {
-                    new Thread(() => RouteRight(CarListRight[counterRight], CarListRight[counterRight])).Start(); 
-                }
+                CarListRight[counterRight].spawnStatic(directionRight);
+                if(counterRight > 0)
+                new Thread(() => RouteRight(CarListRight[counterRight], CarListRight[counterRight-1])).Start();
+                else new Thread(() => RouteRight(CarListRight[counterRight], CarListRight[counterRight])).Start();
             }
+
             else {
                 CarListLeft.Add(new Car(myCanvas));
 
                 counterLeft++;
                 CarListLeft[counterLeft].velocity = velocity;
                 CarListLeft[counterLeft].spawnStatic(directionRight);
+                if (counterLeft > 1)
+                { new Thread(() => RouteLeft(CarListLeft[counterLeft], CarListLeft[counterLeft - 1])).Start(); } 
+                else  {
 
-                new Thread(() => RouteLeft(CarListLeft[counterLeft])).Start();
+                    new Thread(() => RouteLeft(CarListLeft[counterLeft], CarListLeft[counterLeft])).Start();
+                }
             }
         }
 
@@ -194,7 +202,7 @@ namespace wpf_car_simulation
         }
 
 
-        public void RouteLeft(Car car)
+        public void RouteLeft(Car car, Car car2)
         {
            double x = 0, y = 0,r = 0;
 
@@ -225,11 +233,29 @@ namespace wpf_car_simulation
 
                 ////1000<i<= y=-1 ; x=0;
 
+                car.position = i;
+
+                if (counterLeft > 1)
+                {
+                    if (car2.position - car.position == 60)
+                    {
+
+
+                        car.velocity = car2.velocity;
+
+                    }
+                }
+
                 this.Dispatcher.Invoke(() => car.OffsetPos(y, x));
                 this.Dispatcher.Invoke(() => car.Rotate(r));
                 Thread.Sleep(car.velocity);
             }
-
+            if (counterLeft > 0)
+            {
+                CarListLeft.RemoveAt(car.id);
+                counterLeft--;
+            }
+        
             //for (int i = 0; i < 910; i++)
             //{
             //    this.Dispatcher.Invoke(() => car.OffsetPos(0, -1));
