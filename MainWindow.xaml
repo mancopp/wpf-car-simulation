@@ -24,9 +24,9 @@
                 <Label>Direction:</Label>
                 <RadioButton Content="Left" Checked="Left_Checked"/>
                 <RadioButton x:Name="Right" Content="Right" Checked="Right_Checked"/>
-                
-                
-                <Button Height="20" Content="Spawn" Click="Button_Click"/>
+
+
+                <Button Height="20"     Content="Spawn" Click="Button_Click"/>
 
                 <Label FontWeight="Bold" FontSize="18">Train</Label>
                 <Label>Velocity:</Label>

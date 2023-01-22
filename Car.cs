@@ -19,6 +19,9 @@ namespace wpf_car_simulation
         public double top;
         public double left;
         public int position;
+        public int carstop=325;
+    
+
 
         public Car(Canvas canvas)
         {
