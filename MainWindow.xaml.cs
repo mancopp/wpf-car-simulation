@@ -24,6 +24,7 @@ namespace wpf_car_simulation
     public partial class MainWindow : INotifyOnPropertyChanged
     {
         public Car car;
+        private Random rnd = new Random();
 
         List<Car> CarListLeft = new List<Car>();
         List<Car> CarListRight = new List<Car>();
@@ -37,13 +38,28 @@ namespace wpf_car_simulation
         public int stopPoint2 = 1550;
         public int stopPoint3 = 2050;
 
-
+        public bool LeftCarCanBeSpawned = true;
+        public bool RightCarCanBeSpawned = true;
+        private bool _trainCanBeSpawned = true;
 
         private string _boundNumberCar;
         private string _boundNumberTrain;
 
         private bool carStop = false;
+        private bool simulationStarted = false;
 
+        public bool TrainCanBeSpawned
+        {
+            get { return _trainCanBeSpawned; }
+            set
+            {
+                if (_trainCanBeSpawned != value)
+                {
+                    _trainCanBeSpawned = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public string BoundNumberCar
         {
@@ -66,8 +82,6 @@ namespace wpf_car_simulation
             get { return _boundNumberTrain; }
             set
             {
-
-
                 if (_boundNumberTrain != value)
                 {
                     _boundNumberTrain = value;
@@ -96,6 +110,20 @@ namespace wpf_car_simulation
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                if (Int32.Parse(BoundNumberCar) > 10 || Int32.Parse(BoundNumberCar) < 1)
+                {
+                    MessageBox.Show("Invalid velocity, should be 1-10");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Invalid velocity, should be 1-10");
+                return;
+            }
+
             int velocity = VelocityConverter(Int32.Parse(BoundNumberCar));
 
             if (directionRight == true)
@@ -112,15 +140,16 @@ namespace wpf_car_simulation
                     new Thread(() => RouteRight(CarListRight[counterRight], CarListRight[counterRight - 1])).Start();
                 else new Thread(() => RouteRight(CarListRight[counterRight], CarListRight[counterRight])).Start();
             }
-
             else
             {
+                if (CarListLeft.ElementAtOrDefault(CarListLeft.Count - 1) != null && Canvas.GetLeft(CarListLeft[CarListLeft.Count - 1].carSprite) > 1000) return;
+
                 CarListLeft.Add(new Car(myCanvas));
 
                 counterLeft++;
                 CarListLeft[counterLeft].velocity = velocity;
                 CarListLeft[counterLeft].spawnStatic(directionRight);
-                if (counterLeft > 1)
+                if (counterLeft > 0)
                 {
                     new Thread(() => RouteLeft(CarListLeft[counterLeft], CarListLeft[counterLeft - 1])).Start();
                 }
@@ -216,73 +245,49 @@ namespace wpf_car_simulation
             for (int i = 0; i < 2990; i++)
             {
                 //Top
-
                 if ((i <= 910) || (1120 < i && i <= 1660) || (2090 < i && i <= 2990)) y = 0;
                 if ((910 < i && i <= 1120) || (1760 < i && i <= 1830)) y = -1;
                 if ((1660 < i && i <= 1760) || (1990 < i && i <= 2090)) y = -0.2;
 
                 // Left
                 if ((i <= 1000) || (1990 < i && i <= 2090)) x = -1;
-
                 if ((1000 < i && i <= 1030) || (1830 < i && i <= 1890)) x = 0;
-
                 if (1030 < i && i <= 1760) x = 1;
-
                 if (1760 < i && i <= 1830) x = 0.6;
-
                 if (1890 < i && i <= 1990) x = -0.6;
 
                 // Rotate
-
                 if ((910 < i && i <= 1000) || (1030 < i && i <= 1120)) r = 1;
                 else if (1660 < i && i <= 2090) r = -0.418;
                 else r = 0;
 
                 car.position = i;
 
-                if (counterLeft > 1)
+                if (counterLeft > 0)
                 {
                     if (car2.position - car.position <= 81)
-                    {
-                        
+                    { 
                         car.velocity = car2.velocity;
-
-                       
-
-                       // if (car2.position - car.position <= 31) Thread.Sleep(500);
-
                     }
                 }
 
-
-                if (counterLeft > 1)
+                if (counterLeft > 0)
                 {
                     if (car2.position - car.position == 71)
                     {
                         while (true)
                         {
-
                             if (carStop)
                             {
-                               
                                 Thread.Sleep(500);
                             }
                             else
                             {
-                               
                                 break;
-
                             }
                         }
-
-
-
-                        // if (car2.position - car.position <= 31) Thread.Sleep(500);
-
                     }
                 }
-
-                //
 
                 if (i == stopPoint2)
                 {
@@ -299,18 +304,14 @@ namespace wpf_car_simulation
                         {
                             stopPoint2 = 1550;
                             break;
-
                         }
                     }
                 }
 
-
                 if (i == stopPoint3)
                 {
-
                     while (true)
                     {
-
                         if (carStop)
                         {
                             stopPoint3 = car.position - 80;
@@ -320,7 +321,6 @@ namespace wpf_car_simulation
                         {
                             stopPoint3 = 2050;
                             break;
-
                         }
                     }
                 }
@@ -328,10 +328,8 @@ namespace wpf_car_simulation
 
                 if (i == stopPoint)
                 {
-
                     while (true)
                     {
-
                         if (carStop)
                         {
                             stopPoint = car.position - 80;
@@ -341,17 +339,9 @@ namespace wpf_car_simulation
                         {
                             stopPoint = 325;
                             break;
-
                         }
                     }
                 }
-
-
-
-
-
-
-
                 this.Dispatcher.Invoke(() => car.OffsetPos(y, x));
                 this.Dispatcher.Invoke(() => car.Rotate(r));
                 Thread.Sleep(car.velocity);
@@ -363,14 +353,14 @@ namespace wpf_car_simulation
             }
         }
 
-    
-
-
 
 
         public void RailRoadBot(Train train)
         {
+            this.Dispatcher.Invoke(() => btnSpawnTrain.IsEnabled = false);
+            TrainCanBeSpawned = false;
             carStop = true;
+
             Thread.Sleep(500);
             int offset;
             if (train.directionBot)
@@ -386,7 +376,10 @@ namespace wpf_car_simulation
                 this.Dispatcher.Invoke(() => train.OffsetPos(offset, 0));
                 Thread.Sleep(train.velocity);
             }
+
             carStop = false;
+            this.Dispatcher.Invoke(() => btnSpawnTrain.IsEnabled = true);
+            TrainCanBeSpawned = true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -418,6 +411,20 @@ namespace wpf_car_simulation
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                if (Int32.Parse(BoundNumberTrain) > 10 || Int32.Parse(BoundNumberTrain) < 1)
+                {
+                    MessageBox.Show("Invalid velocity, should be 1-10");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Invalid velocity, should be 1-10");
+                return;
+            }
+
             int velocity = VelocityConverter(Int32.Parse(BoundNumberTrain));
 
             Train train = new Train(myCanvas);
@@ -426,6 +433,56 @@ namespace wpf_car_simulation
             train.directionBot = directionBot;
             train.spawnStatic();
             new Thread(() => RailRoadBot(train)).Start();
+        }
+
+        private void BtnStartSimulation(object sender, RoutedEventArgs e)
+        {
+            simulationStarted = !simulationStarted;
+            if (simulationStarted)
+            {
+                new Thread(() => Simulate()).Start();
+                btnSimulation.Content = "Stop Simulation";
+            }
+            else
+            {
+                btnSimulation.Content = "Start Simulation";
+            }
+        }
+
+        private void Simulate()
+        {
+            while (simulationStarted)
+            {
+                int velocity = rnd.Next(1, 11); // 1-10
+                int type = rnd.Next(1, 11); // 1-10
+                bool way = Convert.ToBoolean(rnd.Next(2));
+                if(type < 8)
+                {
+                    if (way)
+                    {
+                        
+                    }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+                    if (TrainCanBeSpawned)
+                    {
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            Train train = new Train(myCanvas);
+                            train.velocity = velocity;
+                            train.directionBot = way;
+                            train.spawnStatic();
+                            new Thread(() => RailRoadBot(train)).Start();
+                        });
+                    }
+                }
+                Thread.Sleep(rnd.Next(400, 4000));
+            }
         }
     }
 }

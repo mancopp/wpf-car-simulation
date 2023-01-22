@@ -14,15 +14,13 @@ namespace wpf_car_simulation
         private Canvas mainCanvas;
         public int id = 1;
         public int velocity = 1;
-        private Image carSprite;
+        public Image carSprite;
         private double _rotateTransformAngle = 0;
         public double top;
         public double left;
         public int position;
         public int carstop=325;
     
-
-
         public Car(Canvas canvas)
         {
             this.mainCanvas = canvas;
@@ -30,22 +28,15 @@ namespace wpf_car_simulation
 
         public void spawnStatic(bool direction)
         {
-
-
             if (direction == true)
             {
                 top = 290;
                 left = 10;
-                
-
             }
             else
             {
-
                 top = 685;
                 left = 1150;
-
-
             }
 
             System.Windows.Controls.Image carSprite = new System.Windows.Controls.Image();
@@ -53,34 +44,24 @@ namespace wpf_car_simulation
             carSprite.Height = 50;
 
             this.carSprite = carSprite;
-
-            //    SetRotation(-90);
-
             SetRotation(-90);
 
             if (direction == true)
             {
                 SetRotation(-90);
-
             }
             else
             {
-
                 SetRotation(90);
-
-
             }
-
 
             this.mainCanvas.Children.Add(this.carSprite);
             Canvas.SetTop(this.carSprite, top);
             Canvas.SetLeft(this.carSprite, left);
-
         }
 
         public void startThread(double startRt)
         {
-
             int top = 180;
             int left = 30;
 
@@ -97,13 +78,14 @@ namespace wpf_car_simulation
             this.mainCanvas.Children.Add(carSprite);
             Canvas.SetTop(carSprite, top);
             Canvas.SetLeft(carSprite, left);
-
         }
 
         public void SetPos(int top, int left)
         {
             Canvas.SetTop(carSprite, top);
+            this.top = top;
             Canvas.SetLeft(carSprite, left);
+            this.left = left;
         }
 
         public void OffsetPos(double topOff, double leftOff)
@@ -111,7 +93,7 @@ namespace wpf_car_simulation
             Canvas.SetTop(carSprite, Canvas.GetTop(carSprite) + topOff);
             top = Canvas.GetTop(carSprite) + topOff;
             Canvas.SetLeft(carSprite, Canvas.GetLeft(carSprite) + leftOff);
-           left = Canvas.GetTop(carSprite) + topOff;
+            left = Canvas.GetTop(carSprite) + topOff;
         }
 
         public void SetRotation(int rot)

@@ -34,12 +34,10 @@
                 <Label>Direction:</Label>
                 <RadioButton Content="Top" Checked="Top_Checked"/>
                 <RadioButton x:Name="Bot" Content="Bottom" Checked="Bot_Checked"/>
-                <Button Height="20" Content="Spawn" Click="Button_Click_1"/>
+                <Button x:Name="btnSpawnTrain" Height="20" Content="Spawn" Click="Button_Click_1" IsEnabled="{Binding TrainCanBeSpawned}" />
 
-                <Label FontWeight="Bold" FontSize="18">DevTools</Label>
-                <Button Height="20" Content="Start Simulation"/>
-                <Button Height="20" Content="Toggle Barriers"/>
-                <Button Height="20" Content="Pause" Background="red" Foreground="White" BorderBrush="White"/>
+                <Label FontWeight="Bold" FontSize="18">Simulator</Label>
+                <Button x:Name="btnSimulation" Height="40" Content="Start Simulation" Click="BtnStartSimulation"/>
                 <Label Content="{Binding CarPos}"></Label>
             </StackPanel>
             

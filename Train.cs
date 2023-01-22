@@ -15,7 +15,6 @@ namespace wpf_car_simulation
         public int id = 1;
         public int velocity = 1;
         private Image trainSprite;
-        private double _rotateTransformAngle = 0;
         public bool directionBot;
         public double top;
         public double left;
