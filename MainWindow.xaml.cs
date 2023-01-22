@@ -34,6 +34,20 @@ namespace wpf_car_simulation
         public bool directionRight;
         public bool directionBot;
 
+        public int[] stopLeft = new int[]
+        {
+            310,
+            1550,
+            2050
+        }; 
+        
+        public int[] stopRight = new int[]
+        {
+            670,
+            950,
+            2250
+        };
+
         public int stopPoint = 310;
         public int stopPoint2 = 1550;
         public int stopPoint3 = 2050;
@@ -128,121 +142,101 @@ namespace wpf_car_simulation
 
             if (directionRight == true)
             {
-                CarListRight.Add(new Car(myCanvas));
-
-                counterRight++;
-                CarListRight[counterRight].velocity = velocity;
-                CarListRight[counterRight].id = counterRight;
-                CarListRight[counterRight].spawnStatic(directionRight);
-
-                CarListRight[counterRight].spawnStatic(directionRight);
-                if (counterRight > 0)
-                    new Thread(() => RouteRight(CarListRight[counterRight], CarListRight[counterRight - 1])).Start();
-                else new Thread(() => RouteRight(CarListRight[counterRight], CarListRight[counterRight])).Start();
+                StartRightCarThr(velocity);
             }
             else
             {
-                if (CarListLeft.ElementAtOrDefault(CarListLeft.Count - 1) != null && Canvas.GetLeft(CarListLeft[CarListLeft.Count - 1].carSprite) > 1000) return;
+                StartLeftCarThr(velocity);
+            }
+        }
 
-                CarListLeft.Add(new Car(myCanvas));
+        public void RouteRight(Car car, Car nextCar)
+        {
+            double x = 0, y = 0, r = 0, k1 = 0, k2 = 0;
 
-                counterLeft++;
-                CarListLeft[counterLeft].velocity = velocity;
-                CarListLeft[counterLeft].spawnStatic(directionRight);
-                if (counterLeft > 0)
+            for (int i = 0; i < 12000; i++)
+            {
+                if ((i <= 790) || (960 < i && i <= 1520) || (1830 < i && i <= 2700)) y = 0;
+                if ((790 <= i && i <= 960) || (1640 < i && i <= 1710)) y = 1;
+                if ((1520 <= i && i <= 1640) || (1710 < i && i <= 1830)) y = 0.95;
+
+                if ((i <= 875) || (1830 < i && i <= 2700)) x = 1;
+                else if (875 < i && i <= 1520) x = -1;
+                else if (1640 < i && i <= 1710) x = 0;
+                else if (1520 < i && i <= 1640)
                 {
-                    new Thread(() => RouteLeft(CarListLeft[counterLeft], CarListLeft[counterLeft - 1])).Start();
+                    k1 += 0.002;
+                    x = -1 - k1;
                 }
                 else
                 {
-                    new Thread(() => RouteLeft(CarListLeft[counterLeft], CarListLeft[counterLeft])).Start();
+                    k2 -= 0.002;
+                    x = 1 - k2;
                 }
-            }
-        }
 
-        public void RouteRight(Car car, Car car2)
-        {
-            for (int i = 0; i < 650; i++)
-            {
-                this.Dispatcher.Invoke(() => car.OffsetPos(0, 1));
+                if ((i <= 790) || (960 < i && i <= 1520) || (1640 < i && i <= 1710) || (1830 < i && i <= 2700)) r = 0;
+                else if ((1520 < i && i <= 1640) || (1710 < i && i <= 1830)) r = -0.75;
+                else r = 1.058;
 
+                car.position = i;
 
+                if (nextCar != null)
+                {
+                    if (nextCar.position - car.position <= 81)
+                    {
+                        car.velocity = nextCar.velocity;
+                        Thread.Sleep(100);
+                    }
 
-                //if (car.id>1)
-                //{
+                    if (nextCar.position - car.position == 71)
+                    {
+                        while (true)
+                        {
+                            if (carStop)
+                            {
+                                Thread.Sleep(100);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
 
-                //    if (/*(car.velocity < car2.velocity)&&*/(car.left==car2.left)&& (car.top == car2.top)) MessageBox.Show() ;
+                if (stopRight.Contains(i))
+                {
+                    while (true)
+                    {
 
-                //}
+                        if (carStop)
+                        {
+                            Thread.Sleep(100);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    car.Rotate(r);
+                    car.OffsetPos(y, x);
+                });
 
                 Thread.Sleep(car.velocity);
-
             }
-
-            //Check if redlight
-
-
-            for (int i = 0; i < 120; i++)
-            {
-                this.Dispatcher.Invoke(() => car.OffsetPos(0, 1));
-                Thread.Sleep(car.velocity);
-            }
-
-
-
-            //this.Dispatcher.Invoke(() => car.SetRotation(0));
-
-            for (int i = 0; i < 85; i++)
-            {
-                this.Dispatcher.Invoke(() => car.OffsetPos(1, 1));
-                Thread.Sleep(car.velocity);
-            }
-            for (int i = 0; i < 85; i++)
-            {
-                this.Dispatcher.Invoke(() => car.OffsetPos(1, -1));
-                Thread.Sleep(car.velocity);
-            }
-
-
-            for (int i = 0; i < 550; i++)
-            {
-                this.Dispatcher.Invoke(() => car.OffsetPos(0, -1));
-                Thread.Sleep(car.velocity);
-            }
-
-
-            for (int i = 0; i < 145; i++)
-            {
-                this.Dispatcher.Invoke(() => car.OffsetPos(1, -1));
-                Thread.Sleep(car.velocity);
-            }
-
-            for (int i = 0; i < 145; i++)
-            {
-                this.Dispatcher.Invoke(() => car.OffsetPos(1, 1));
-                Thread.Sleep(car.velocity);
-            }
-
-            for (int i = 0; i < 400; i++)
-            {
-                this.Dispatcher.Invoke(() => car.OffsetPos(0, 1));
-                Thread.Sleep(car.velocity);
-            }
-
-            for (int i = 0; i < 600; i++)
-            {
-                this.Dispatcher.Invoke(() => car.OffsetPos(0, 1));
-                Thread.Sleep(car.velocity);
-            }
-
+            CarListLeft.Remove(car);
         }
 
 
-        public void RouteLeft(Car car, Car car2)
+        public void RouteLeft(Car car, Car nextCar)
         {
             double x = 0, y = 0, r = 0;
 
-            for (int i = 0; i < 2990; i++)
+            for (int i = 0; i < 12990; i++)
             {
                 //Top
                 if ((i <= 910) || (1120 < i && i <= 1660) || (2090 < i && i <= 2990)) y = 0;
@@ -263,23 +257,21 @@ namespace wpf_car_simulation
 
                 car.position = i;
 
-                if (counterLeft > 0)
+                if (nextCar != null)
                 {
-                    if (car2.position - car.position <= 81)
+                    if (nextCar.position - car.position <= 81)
                     { 
-                        car.velocity = car2.velocity;
+                        car.velocity = nextCar.velocity;
+                        Thread.Sleep(100);
                     }
-                }
 
-                if (counterLeft > 0)
-                {
-                    if (car2.position - car.position == 71)
+                    if (nextCar.position - car.position == 71)
                     {
                         while (true)
                         {
                             if (carStop)
                             {
-                                Thread.Sleep(500);
+                                Thread.Sleep(100);
                             }
                             else
                             {
@@ -289,68 +281,31 @@ namespace wpf_car_simulation
                     }
                 }
 
-                if (i == stopPoint2)
+                if (stopLeft.Contains(i))
                 {
-
                     while (true)
                     {
 
                         if (carStop)
                         {
-                            stopPoint2 = car.position - 80;
-                            Thread.Sleep(500);
+                            Thread.Sleep(100);
                         }
                         else
                         {
-                            stopPoint2 = 1550;
                             break;
                         }
                     }
                 }
 
-                if (i == stopPoint3)
+                this.Dispatcher.Invoke(() =>
                 {
-                    while (true)
-                    {
-                        if (carStop)
-                        {
-                            stopPoint3 = car.position - 80;
-                            Thread.Sleep(500);
-                        }
-                        else
-                        {
-                            stopPoint3 = 2050;
-                            break;
-                        }
-                    }
-                }
+                    car.OffsetPos(y, x);
+                    car.Rotate(r);
+                });
 
-
-                if (i == stopPoint)
-                {
-                    while (true)
-                    {
-                        if (carStop)
-                        {
-                            stopPoint = car.position - 80;
-                            Thread.Sleep(500);
-                        }
-                        else
-                        {
-                            stopPoint = 325;
-                            break;
-                        }
-                    }
-                }
-                this.Dispatcher.Invoke(() => car.OffsetPos(y, x));
-                this.Dispatcher.Invoke(() => car.Rotate(r));
                 Thread.Sleep(car.velocity);
             }
-            if (counterLeft > 0)
-            {
-                CarListLeft.RemoveAt(car.id);
-                counterLeft--;
-            }
+            CarListLeft.Remove(car);
         }
 
 
@@ -449,6 +404,30 @@ namespace wpf_car_simulation
             }
         }
 
+        private void StartRightCarThr(int vel)
+        {
+            if (CarListRight.ElementAtOrDefault(CarListRight.Count - 1) != null && Canvas.GetLeft(CarListRight[CarListRight.Count - 1].carSprite) < 150) return;
+
+            Car currCar = new Car(myCanvas);
+            CarListRight.Add(currCar);
+
+            currCar.velocity = vel;
+            currCar.spawnStatic(true);
+            new Thread(() => RouteRight(currCar, CarListRight.ElementAtOrDefault(CarListRight.Count - 2))).Start();
+        }  
+        
+        private void StartLeftCarThr(int vel)
+        {
+            if (CarListLeft.ElementAtOrDefault(CarListLeft.Count - 1) != null && Canvas.GetLeft(CarListLeft[CarListLeft.Count - 1].carSprite) > 1000) return;
+
+            Car currCar = new Car(myCanvas);
+            CarListLeft.Add(currCar);
+
+            currCar.velocity = vel;
+            currCar.spawnStatic(false);
+            new Thread(() => RouteLeft(currCar, CarListLeft.ElementAtOrDefault(CarListLeft.Count - 2))).Start();
+        }
+
         private void Simulate()
         {
             while (simulationStarted)
@@ -460,11 +439,17 @@ namespace wpf_car_simulation
                 {
                     if (way)
                     {
-                        
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            StartRightCarThr(velocity);
+                        });
                     }
                     else
                     {
-
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            StartLeftCarThr(velocity);
+                        });
                     }
                 }
                 else

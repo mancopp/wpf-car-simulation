@@ -30,7 +30,7 @@ namespace wpf_car_simulation
         {
             if (direction == true)
             {
-                top = 290;
+                top = 260;
                 left = 10;
             }
             else
